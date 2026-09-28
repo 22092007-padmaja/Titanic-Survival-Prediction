@@ -9,42 +9,97 @@ st.set_page_config(
     layout="centered"
 )
 def set_background(image_path):
+
     with open(image_path, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
 
-    css = f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/jpeg;base64,{encoded}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
+    st.markdown(
+        f"""
+        <style>
 
-    .stApp::before {{
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.35);
-        z-index: -1;
-    }}
-    </style>
-    """
+        /* Background */
+        .stApp {{
+            background:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.35),
+                    rgba(255, 255, 255, 0.35)
+                ),
+                url("data:image/jpeg;base64,{encoded}");
 
-    st.markdown(css, unsafe_allow_html=True)
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
 
+
+        /* Main title */
+        .stApp h1 {{
+            color: #111111 !important;
+            font-weight: 800 !important;
+        }}
+
+
+        /* Section headings */
+        .stApp h2,
+        .stApp h3 {{
+            color: #111111 !important;
+            font-weight: 700 !important;
+        }}
+
+
+        /* Normal text */
+        .stApp p {{
+            color: #111111 !important;
+            font-weight: 500 !important;
+        }}
+
+
+        /* Labels */
+        .stApp label {{
+            color: #111111 !important;
+            font-weight: 600 !important;
+        }}
+
+
+        /* Selectbox and number input text */
+        .stApp input {{
+            color: #111111 !important;
+        }}
+
+
+        /* Selectbox selected value */
+        .stApp [data-baseweb="select"] {{
+            color: #111111 !important;
+        }}
+
+
+        .stApp [data-baseweb="select"] * {{
+            color: #111111 !important;
+        }}
+
+
+        /* Input containers */
+        .stApp [data-testid="stNumberInput"] input {{
+            color: #111111 !important;
+        }}
+
+
+        /* Button */
+        .stApp button {{
+            font-weight: 700 !important;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 set_background("images/titanic.jpg")
 st.title("🚢 Titanic Survival Prediction")
-
 st.write(
     "Enter passenger details to predict whether the passenger "
     "would have survived the Titanic disaster."
 )
-
 st.subheader("Passenger Information")
 pclass = st.selectbox(
     "Passenger Class",
@@ -86,8 +141,6 @@ embarked = st.selectbox(
     ["S", "C", "Q"]
 )
 if st.button("Predict Survival"):
-
-    # Create input DataFrame
     input_data = pd.DataFrame({
         "Pclass": [pclass],
         "Sex": [sex],
@@ -103,6 +156,7 @@ if st.button("Predict Survival"):
     survival_probability = probabilities[1]
     st.subheader("Prediction Result")
     if prediction == 1:
+
         st.success(
             "✅ Passenger is predicted to SURVIVE."
         )
@@ -115,8 +169,6 @@ if st.button("Predict Survival"):
         f"Survival Probability: "
         f"{survival_probability:.2%}"
     )
-
-
     st.warning(
         f"Non-Survival Probability: "
         f"{non_survival_probability:.2%}"
